@@ -15,6 +15,7 @@
         "name": "next"
       }
     ],
+    "typeRoots": ["./types/next-auth.d.ts"],
     "types": ["jest", "node"]
   },
   "include": [

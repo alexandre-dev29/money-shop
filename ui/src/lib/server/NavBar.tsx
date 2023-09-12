@@ -8,10 +8,11 @@ import {
   NavbarMenuItem,
   NavbarMenuToggle,
 } from '@nextui-org/navbar';
-import { Button } from '@nextui-org/button';
 import { Link } from '@nextui-org/link';
 import { siteConfig } from 'config';
 import { ThemeToggle } from '../client/theme-toggle';
+import { UserConnection } from '../client/UserConnection';
+import { getServerSession } from 'next-auth';
 
 export const AcmeLogo = () => (
   <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
@@ -24,8 +25,9 @@ export const AcmeLogo = () => (
   </svg>
 );
 
-export function NavBarComponent() {
-  const profile: any = {};
+export async function NavBarComponent() {
+  const session = await getServerSession();
+
   const menuItems = [
     'Profile',
     'Dashboard',
@@ -54,7 +56,7 @@ export function NavBarComponent() {
         </NavbarBrand>
         {siteConfig.mainNav.map((item) => {
           return item.needsAdminRights ? (
-            profile.role === 'Admin' ? (
+            session?.user?.image === 'ADMIN' ? (
               <Link key={Math.random()} href={item.href}>
                 {item.title}
               </Link>
@@ -73,9 +75,7 @@ export function NavBarComponent() {
         <NavbarItem className="flex">
           <ThemeToggle />
         </NavbarItem>
-        <NavbarItem className="hidden lg:flex ml-4">
-          <Link href="#">Login</Link>
-        </NavbarItem>
+        <UserConnection />
       </NavbarContent>
 
       <NavbarMenu>
