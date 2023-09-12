@@ -1,5 +1,5 @@
 'use client';
-import { Card, CardBody, Input, Button } from '@nextui-org/react';
+import { Card, CardBody, Input, Button, CardHeader } from '@nextui-org/react';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import { useForm } from 'react-hook-form';
 // eslint-disable-next-line @nx/enforce-module-boundaries
@@ -29,8 +29,8 @@ export const LoginForm = ({ csrfToken }: { csrfToken: string | undefined }) => {
   };
   return (
     <form onSubmit={onSubmit}>
-      <Card className={'w-[30vw]'}>
-        <CardBody className={'py-12 px-12 gap-5'}>
+      <Card className={'w-[90vw] md:w-[30vw]'}>
+        <CardHeader className="p-6 space-y-1">
           <input name={'csrfToken'} type={'hidden'} defaultValue={csrfToken} />
           <div>
             <h2 className={'font-bold text-2xl'}>Login</h2>
@@ -38,6 +38,8 @@ export const LoginForm = ({ csrfToken }: { csrfToken: string | undefined }) => {
               Enter your phone number and password below to login
             </p>
           </div>
+        </CardHeader>
+        <CardBody className={'space-y-10'}>
           <Input
             autoFocus
             required

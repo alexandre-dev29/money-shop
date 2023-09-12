@@ -45,26 +45,24 @@ export async function NavBarComponent() {
       <NavbarContent className="sm:hidden pr-3" justify="center">
         <NavbarBrand>
           <AcmeLogo />
-          <p className="font-bold text-inherit">Money shop</p>
         </NavbarBrand>
       </NavbarContent>
 
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
+      <NavbarContent className="hidden sm:flex gap-8" justify="center">
         <NavbarBrand>
           <AcmeLogo />
-          <p className="font-bold text-inherit">Money shop</p>
         </NavbarBrand>
         {siteConfig.mainNav.map((item) => {
           return item.needsAdminRights ? (
             session?.user?.image === 'ADMIN' ? (
-              <Link key={Math.random()} href={item.href}>
+              <Link key={Math.random()} href={item.href} color={'foreground'}>
                 {item.title}
               </Link>
             ) : (
               ''
             )
           ) : (
-            <Link key={Math.random()} href={item.href}>
+            <Link key={Math.random()} href={item.href} color={'foreground'}>
               {item.title}
             </Link>
           );
