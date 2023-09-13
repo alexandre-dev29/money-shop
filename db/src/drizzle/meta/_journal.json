@@ -1,0 +1,34 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1694589850819,
+      "tag": "0000_zippy_star_brand",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1694593395465,
+      "tag": "0001_zippy_triton",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1694594198348,
+      "tag": "0002_sticky_mulholland_black",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1694595649464,
+      "tag": "0003_medical_stick",
+      "breakpoints": true
+    }
+  ]
+}

@@ -1,0 +1,184 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "id": "b4095c56-0355-41fb-bc13-40e977803cb7",
+  "prevId": "a72d0d6b-ecb2-4b8a-a6b0-73644fb2b4b7",
+  "tables": {
+    "account": {
+      "name": "account",
+      "schema": "",
+      "columns": {
+        "phonenumber": {
+          "name": "phonenumber",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "agentcode": {
+          "name": "agentcode",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "agentname": {
+          "name": "agentname",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "account_agentcode_key": {
+          "name": "account_agentcode_key",
+          "columns": [
+            "agentcode"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "shop": {
+      "name": "shop",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "shop_name": {
+          "name": "shop_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "shop_informations": {
+          "name": "shop_informations",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createAt": {
+          "name": "createAt",
+          "type": "timestamp(3)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp(3)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "shop_shop_name_key": {
+          "name": "shop_shop_name_key",
+          "columns": [
+            "shop_name"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "full_name": {
+          "name": "full_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "role": {
+          "name": "role",
+          "type": "role",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'User'"
+        },
+        "shopid": {
+          "name": "shopid",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "users_shopid_shop_id_fk": {
+          "name": "users_shopid_shop_id_fk",
+          "tableFrom": "users",
+          "tableTo": "shop",
+          "columnsFrom": [
+            "shopid"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {
+    "devise": {
+      "name": "devise",
+      "values": {
+        "CDF": "CDF",
+        "USD": "USD"
+      }
+    },
+    "genre_transation": {
+      "name": "genre_transation",
+      "values": {
+        "Equity": "Equity",
+        "Airtel": "Airtel",
+        "Vodacom": "Vodacom",
+        "Africell": "Africell",
+        "Orange": "Orange",
+        "MainAccount": "MainAccount"
+      }
+    },
+    "role": {
+      "name": "role",
+      "values": {
+        "Admin": "Admin",
+        "Manager": "Manager",
+        "User": "User"
+      }
+    },
+    "type_transaction": {
+      "name": "type_transaction",
+      "values": {
+        "Depot": "Depot",
+        "Retrait": "Retrait",
+        "Approvisionement": "Approvisionement"
+      }
+    }
+  },
+  "schemas": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  }
+}

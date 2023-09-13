@@ -1,0 +1,394 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "id": "8773fab0-2b62-464c-b7ae-749a8674b581",
+  "prevId": "b21d630d-39d1-4ab1-9edf-ec5ac3abeb4d",
+  "tables": {
+    "account": {
+      "name": "account",
+      "schema": "",
+      "columns": {
+        "phonenumber": {
+          "name": "phonenumber",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "agentcode": {
+          "name": "agentcode",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "agentname": {
+          "name": "agentname",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "account_agentcode_key": {
+          "name": "account_agentcode_key",
+          "columns": [
+            "agentcode"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "shop": {
+      "name": "shop",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "shop_name": {
+          "name": "shop_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "shop_informations": {
+          "name": "shop_informations",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createAt": {
+          "name": "createAt",
+          "type": "timestamp(3)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp(3)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "shop_shop_name_key": {
+          "name": "shop_shop_name_key",
+          "columns": [
+            "shop_name"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "sub_account": {
+      "name": "sub_account",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "devise": {
+          "name": "devise",
+          "type": "devise",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "amount": {
+          "name": "amount",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "account_number": {
+          "name": "account_number",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "transation_genre": {
+          "name": "transation_genre",
+          "type": "genre_transation",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'Airtel'"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "sub_account_account_number_account_phonenumber_fk": {
+          "name": "sub_account_account_number_account_phonenumber_fk",
+          "tableFrom": "sub_account",
+          "tableTo": "account",
+          "columnsFrom": [
+            "account_number"
+          ],
+          "columnsTo": [
+            "phonenumber"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "transaction": {
+      "name": "transaction",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "transation_type": {
+          "name": "transation_type",
+          "type": "type_transaction",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "amount": {
+          "name": "amount",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "numero_reference": {
+          "name": "numero_reference",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "identityPiece": {
+          "name": "identityPiece",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "phoneNumber": {
+          "name": "phoneNumber",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "clientName": {
+          "name": "clientName",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createAt": {
+          "name": "createAt",
+          "type": "timestamp(3)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp(3)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sub_account_id": {
+          "name": "sub_account_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "amount_before": {
+          "name": "amount_before",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "transaction_user_id_users_id_fk": {
+          "name": "transaction_user_id_users_id_fk",
+          "tableFrom": "transaction",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        },
+        "transaction_sub_account_id_sub_account_id_fk": {
+          "name": "transaction_sub_account_id_sub_account_id_fk",
+          "tableFrom": "transaction",
+          "tableTo": "sub_account",
+          "columnsFrom": [
+            "sub_account_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "full_name": {
+          "name": "full_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "phoneNumber": {
+          "name": "phoneNumber",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "password": {
+          "name": "password",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "role": {
+          "name": "role",
+          "type": "role",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'User'"
+        },
+        "account_number": {
+          "name": "account_number",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "shopid": {
+          "name": "shopid",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "users_account_number_account_phonenumber_fk": {
+          "name": "users_account_number_account_phonenumber_fk",
+          "tableFrom": "users",
+          "tableTo": "account",
+          "columnsFrom": [
+            "account_number"
+          ],
+          "columnsTo": [
+            "phonenumber"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        },
+        "users_shopid_shop_id_fk": {
+          "name": "users_shopid_shop_id_fk",
+          "tableFrom": "users",
+          "tableTo": "shop",
+          "columnsFrom": [
+            "shopid"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "users_phoneNumber_unique": {
+          "name": "users_phoneNumber_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "phoneNumber"
+          ]
+        }
+      }
+    }
+  },
+  "enums": {
+    "devise": {
+      "name": "devise",
+      "values": {
+        "CDF": "CDF",
+        "USD": "USD"
+      }
+    },
+    "genre_transation": {
+      "name": "genre_transation",
+      "values": {
+        "Equity": "Equity",
+        "Airtel": "Airtel",
+        "Vodacom": "Vodacom",
+        "Africell": "Africell",
+        "Orange": "Orange",
+        "MainAccount": "MainAccount"
+      }
+    },
+    "role": {
+      "name": "role",
+      "values": {
+        "Admin": "Admin",
+        "Manager": "Manager",
+        "User": "User"
+      }
+    },
+    "type_transaction": {
+      "name": "type_transaction",
+      "values": {
+        "Depot": "Depot",
+        "Retrait": "Retrait",
+        "Approvisionement": "Approvisionement"
+      }
+    }
+  },
+  "schemas": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  }
+}

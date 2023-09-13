@@ -54,7 +54,7 @@ export async function NavBarComponent() {
         </NavbarBrand>
         {siteConfig.mainNav.map((item) => {
           return item.needsAdminRights ? (
-            session?.user?.image === 'ADMIN' ? (
+            session?.user?.image === 'Admin' ? (
               <Link key={Math.random()} href={item.href} color={'foreground'}>
                 {item.title}
               </Link>

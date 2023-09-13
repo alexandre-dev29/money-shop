@@ -1,0 +1,51 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "id": "a72d0d6b-ecb2-4b8a-a6b0-73644fb2b4b7",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "tables": {
+    "account": {
+      "name": "account",
+      "schema": "",
+      "columns": {
+        "phonenumber": {
+          "name": "phonenumber",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "agentcode": {
+          "name": "agentcode",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "agentname": {
+          "name": "agentname",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "account_agentcode_key": {
+          "name": "account_agentcode_key",
+          "columns": [
+            "agentcode"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  }
+}

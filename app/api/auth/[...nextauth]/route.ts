@@ -1,5 +1,8 @@
 import CredentialsProvider from 'next-auth/providers/credentials';
 import NextAuth, { AuthOptions } from 'next-auth';
+import { DbConnection, users } from 'db';
+import { eq } from 'drizzle-orm';
+import bcrypt from 'bcrypt';
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -14,23 +17,27 @@ export const authOptions: AuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials, req) {
-        // Add logic here to look up the user from the credentials supplied
-        const user = {
-          id: '1',
-          name: 'Axel Mwenze',
-          email: '+243975344824',
-          image: 'ADMIN',
-        };
+        const database = DbConnection.instance();
+        const currentUser = await database.query.users.findFirst({
+          where: eq(users.phoneNumber, `${credentials?.phoneNumber}`),
+        });
 
-        if (user) {
-          // Any object returned will be saved in `user` property of the JWT
-          return user;
-        } else {
-          // If you return null then an error will be displayed advising the user to check their details.
-          return null;
-
-          // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
+        if (
+          currentUser &&
+          (await bcrypt.compare(
+            `${credentials?.password}`,
+            currentUser.password
+          ))
+        ) {
+          return {
+            id: currentUser.id,
+            name: currentUser.fullName,
+            email: currentUser.phoneNumber,
+            image: currentUser.role,
+            customElement: currentUser.accountNumber,
+          };
         }
+        return null;
       },
     }),
   ],
