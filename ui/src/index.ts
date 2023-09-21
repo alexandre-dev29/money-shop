@@ -5,6 +5,15 @@ import {
   SessionProvider,
   AccountList,
   TransactionList,
+  AddTransaction,
+  Approvisionner,
 } from './lib/client';
 
-export { NextUiClientProvider, SessionProvider, TransactionList, AccountList };
+export {
+  NextUiClientProvider,
+  SessionProvider,
+  TransactionList,
+  AccountList,
+  AddTransaction,
+  Approvisionner,
+};

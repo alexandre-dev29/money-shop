@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import {
   Table,
   TableHeader,
@@ -7,7 +7,6 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Input,
   Button,
   DropdownTrigger,
   Dropdown,
@@ -20,10 +19,10 @@ import {
 } from '@nextui-org/react';
 import { DotIcon } from 'lucide-react';
 
-import { columns, users, statusOptions } from 'utils';
+import { columns, statusOptions } from 'utils';
 import { BottomContent } from './transactionTable/BottomContent';
 import { TopContent } from './transactionTable/TopContent';
-import { statusColorMap } from 'types';
+import { statusColorMap, SubAccount, Transaction } from 'types';
 
 const INITIAL_VISIBLE_COLUMNS = [
   'client',
@@ -35,9 +34,15 @@ const INITIAL_VISIBLE_COLUMNS = [
   'date_transaction',
 ];
 
-type User = typeof users[0];
+type User = Transaction;
 
-export function TransactionList() {
+export function TransactionList({
+  transactions,
+  subAccounts,
+}: {
+  transactions: Transaction[];
+  subAccounts: any;
+}) {
   const [filterValue, setFilterValue] = React.useState('');
   const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
     new Set([])
@@ -53,7 +58,7 @@ export function TransactionList() {
   });
   const [page, setPage] = React.useState(1);
 
-  const pages = Math.ceil(users.length / rowsPerPage);
+  const pages = Math.ceil(transactions.length / rowsPerPage);
 
   const hasSearchFilter = Boolean(filterValue);
 
@@ -66,7 +71,7 @@ export function TransactionList() {
   }, [visibleColumns]);
 
   const filteredItems = React.useMemo(() => {
-    let filteredUsers = [...users];
+    let filteredUsers = [...transactions];
 
     if (hasSearchFilter) {
       filteredUsers = filteredUsers.filter((user) => {
@@ -81,12 +86,12 @@ export function TransactionList() {
       Array.from(statusFilter).length !== statusOptions.length
     ) {
       filteredUsers = filteredUsers.filter((user) =>
-        Array.from(statusFilter).includes(user.status)
+        Array.from(statusFilter).includes(user.transaction_type)
       );
     }
 
     return filteredUsers;
-  }, [users, filterValue, statusFilter]);
+  }, [transactions, filterValue, statusFilter]);
 
   const items = React.useMemo(() => {
     const start = (page - 1) * rowsPerPage;
@@ -96,7 +101,7 @@ export function TransactionList() {
   }, [page, filteredItems, rowsPerPage]);
 
   const sortedItems = React.useMemo(() => {
-    return [...items].sort((a: User, b: User) => {
+    return [...items].sort((a: any, b: any) => {
       const first = a[sortDescriptor.column as keyof User] as number;
       const second = b[sortDescriptor.column as keyof User] as number;
       const cmp = first < second ? -1 : first > second ? 1 : 0;
@@ -105,57 +110,53 @@ export function TransactionList() {
     });
   }, [sortDescriptor, items]);
 
-  const renderCell = React.useCallback((user: User, columnKey: React.Key) => {
-    const cellValue = user[columnKey as keyof User];
+  const renderCell = React.useCallback(
+    (user: Transaction, columnKey: React.Key) => {
+      const cellValue = user[columnKey as keyof Transaction];
 
-    switch (columnKey) {
-      case 'client':
-        return <p className={'font-bold '}>{cellValue}</p>;
-      case 'phone_number':
-        return <p className={'font-bold '}>{cellValue}</p>;
-      case 'amount':
-      case 'amount_before':
-        return <p>{`${cellValue} ${user.devise === 'USD' ? ' $' : ' FC'}`}</p>;
-      case 'role':
-        return (
-          <div className="flex flex-col">
-            <p className="text-bold text-small capitalize">{cellValue}</p>
-            <p className="text-bold text-tiny capitalize text-default-500">
-              {user.team}
-            </p>
-          </div>
-        );
-      case 'transaction_type':
-        return (
-          <Chip
-            className="capitalize border-none gap-1 text-white"
-            color={statusColorMap[user.transaction_type]}
-            size="md"
-          >
-            {cellValue}
-          </Chip>
-        );
-      case 'actions':
-        return (
-          <div className="relative flex justify-end items-center gap-2">
-            <Dropdown className="bg-background border-1 border-default-200">
-              <DropdownTrigger>
-                <Button isIconOnly radius="full" size="sm" variant="light">
-                  <DotIcon className="text-default-400" />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu>
-                <DropdownItem>View</DropdownItem>
-                <DropdownItem>Edit</DropdownItem>
-                <DropdownItem>Delete</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </div>
-        );
-      default:
-        return cellValue;
-    }
-  }, []);
+      switch (columnKey) {
+        case 'client':
+          return <p className={'font-bold '}>{cellValue}</p>;
+        case 'phone_number':
+          return <p className={'font-bold '}>{cellValue}</p>;
+        case 'amount':
+        case 'amount_before':
+          return (
+            <p>{`${cellValue} ${user.devise === 'USD' ? ' $' : ' FC'}`}</p>
+          );
+        case 'transaction_type':
+          return (
+            <Chip
+              className="capitalize border-none gap-1 text-white"
+              color={statusColorMap[user.transaction_type]}
+              size="md"
+            >
+              {cellValue}
+            </Chip>
+          );
+        case 'actions':
+          return (
+            <div className="relative flex justify-end items-center gap-2">
+              <Dropdown className="bg-background border-1 border-default-200">
+                <DropdownTrigger>
+                  <Button isIconOnly radius="full" size="sm" variant="light">
+                    <DotIcon className="text-default-400" />
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu>
+                  <DropdownItem>View</DropdownItem>
+                  <DropdownItem>Edit</DropdownItem>
+                  <DropdownItem>Delete</DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </div>
+          );
+        default:
+          return cellValue;
+      }
+    },
+    []
+  );
 
   const onRowsPerPageChange = React.useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -231,7 +232,8 @@ export function TransactionList() {
           statusFilter={statusFilter}
           setVisibleColumns={setVisibleColumns}
           visibleColumns={visibleColumns}
-          userLength={users.length}
+          subAccountList={subAccounts}
+          userLength={transactions.length}
         />
       }
       topContentPlacement="outside"
@@ -249,7 +251,7 @@ export function TransactionList() {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody emptyContent={'No users found'} items={sortedItems}>
+      <TableBody emptyContent={'No transactions found'} items={sortedItems}>
         {(item) => (
           <TableRow key={item.id}>
             {(columnKey) => (

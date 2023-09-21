@@ -1,5 +1,5 @@
 import { Session } from 'next-auth';
-import { userSession } from 'types';
+import { Transaction, userSession } from 'types';
 
 export function getUserFromSession(
   session: Session | null
@@ -28,3 +28,22 @@ export const getColorForText = (currentAccountName: string) => {
       return '';
   }
 };
+
+export function getAllTransactionPured(transactionListData: any) {
+  return transactionListData.map(
+    (value: any) =>
+      ({
+        id: value.id,
+        client: value.user.fullName,
+        phone_number: value.phoneNumber,
+        transaction_type: value.transationType,
+        amount_before: value.amountBefore,
+        amount: value.amount,
+        devise: value.subAccount.devise.toString(),
+        account: value.subAccount.type,
+        piece_identite: value.numeroReference,
+        numero_reference: value.numeroReference,
+        date_transaction: new Date(value.createAt).toLocaleString('fr-Fr'),
+      } as Transaction)
+  );
+}
