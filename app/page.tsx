@@ -1,9 +1,17 @@
-import { Button } from '@nextui-org/button';
-import { DbConnection, users } from 'db';
-import { getServerSession } from 'next-auth';
+import { DbConnection } from 'db';
+import { AccountList, TransactionList } from 'ui';
+
 export default async function Index() {
-  const database = DbConnection.instance();
-  const session = await getServerSession();
-  console.log(session);
-  return <Button color={'primary'}>Click me</Button>;
+  const accountList = await DbConnection.instance().query.account.findMany({
+    with: { sub_accounts: true },
+  });
+
+  return (
+    <>
+      <AccountList accountInformation={accountList} />
+      <section className={'container'}>
+        <TransactionList />
+      </section>
+    </>
+  );
 }

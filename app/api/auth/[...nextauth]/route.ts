@@ -3,6 +3,7 @@ import NextAuth, { AuthOptions } from 'next-auth';
 import { DbConnection, users } from 'db';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcrypt';
+import { setCookie } from 'cookies-next';
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -32,9 +33,7 @@ export const authOptions: AuthOptions = {
           return {
             id: currentUser.id,
             name: currentUser.fullName,
-            email: currentUser.phoneNumber,
-            image: currentUser.role,
-            customElement: currentUser.accountNumber,
+            image: JSON.stringify({ ...currentUser, password: '' }),
           };
         }
         return null;

@@ -13,6 +13,13 @@ module.exports = {
     ...createGlobPatternsForDependencies(__dirname),
   ],
   theme: {
+    container: {
+      center: true,
+      padding: '2px',
+      screens: {
+        '2xl': '1400px',
+      },
+    },
     extend: {},
   },
   darkMode: 'class',

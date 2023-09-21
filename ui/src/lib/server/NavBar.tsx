@@ -13,6 +13,8 @@ import { siteConfig } from 'config';
 import { ThemeToggle } from '../client/theme-toggle';
 import { UserConnection } from '../client/UserConnection';
 import { getServerSession } from 'next-auth';
+import { userSession } from 'types';
+import { getUserFromSession } from 'utils';
 
 export const AcmeLogo = () => (
   <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
@@ -27,7 +29,7 @@ export const AcmeLogo = () => (
 
 export async function NavBarComponent() {
   const session = await getServerSession();
-
+  const informations = getUserFromSession(session);
   const menuItems = [
     'Profile',
     'Dashboard',
@@ -54,7 +56,7 @@ export async function NavBarComponent() {
         </NavbarBrand>
         {siteConfig.mainNav.map((item) => {
           return item.needsAdminRights ? (
-            session?.user?.image === 'Admin' ? (
+            informations?.role === 'Admin' ? (
               <Link key={Math.random()} href={item.href} color={'foreground'}>
                 {item.title}
               </Link>
