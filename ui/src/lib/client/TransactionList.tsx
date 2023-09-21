@@ -196,7 +196,6 @@ export function TransactionList({
 
   return (
     <Table
-      isCompact
       removeWrapper
       aria-label="Example table with custom cells, pagination and sorting"
       bottomContent={

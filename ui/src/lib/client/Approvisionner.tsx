@@ -5,7 +5,6 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
-  ModalFooter,
   Button,
   useDisclosure,
   Select,
@@ -13,17 +12,10 @@ import {
   Input,
   Textarea,
 } from '@nextui-org/react';
-import {
-  DollarSignIcon,
-  Loader2,
-  MailIcon,
-  PlusIcon,
-  Save,
-} from 'lucide-react';
+import { DollarSignIcon, Loader2, PlusIcon, Save } from 'lucide-react';
 import { SubAccount } from 'types';
 import * as zod from 'zod';
 import { useForm } from 'react-hook-form';
-import { signIn } from 'next-auth/react';
 import toast from 'react-hot-toast';
 
 interface ApprovisionnerProps {
