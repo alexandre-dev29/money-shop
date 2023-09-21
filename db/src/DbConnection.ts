@@ -15,7 +15,7 @@ export class DbConnection {
       // @ts-ignore
       const connectionString = `${process.env.DATABASE_URL}`;
       const pool = new Pool({ connectionString });
-      const client = postgres(connectionString);
+      // const client = postgres(connectionString);
       DbConnection.INSTANCE = drizzle(pool, { schema });
     }
     return DbConnection.INSTANCE;
