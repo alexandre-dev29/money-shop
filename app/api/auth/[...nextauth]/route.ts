@@ -5,7 +5,7 @@ import { eq } from 'drizzle-orm';
 import bcrypt from 'bcrypt';
 import { setCookie } from 'cookies-next';
 
-export const authOptions: AuthOptions = {
+const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -27,7 +27,7 @@ export const authOptions: AuthOptions = {
           currentUser &&
           (await bcrypt.compare(
             `${credentials?.password}`,
-            currentUser.password
+            currentUser.password,
           ))
         ) {
           return {
@@ -43,5 +43,5 @@ export const authOptions: AuthOptions = {
   pages: { signIn: '/login' },
 };
 
-export const handler = NextAuth(authOptions);
+const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };

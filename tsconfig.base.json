@@ -17,6 +17,7 @@
     "paths": {
       "config": ["config/src/index.ts"],
       "db": ["db/src/index.ts"],
+      "states": ["states/src/index.ts"],
       "types": ["types/src/index.ts"],
       "ui": ["ui/src/index.ts"],
       "ui/server": ["ui/src/server.ts"],

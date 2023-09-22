@@ -7,6 +7,7 @@ import {
   TransactionList,
   AddTransaction,
   Approvisionner,
+  StoreInitializer,
 } from './lib/client';
 
 export {
@@ -16,4 +17,5 @@ export {
   AccountList,
   AddTransaction,
   Approvisionner,
+  StoreInitializer,
 };

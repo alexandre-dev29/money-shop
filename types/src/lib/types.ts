@@ -47,3 +47,10 @@ export interface SubAccount {
     | 'Orange'
     | 'MainAccount';
 }
+
+export interface Accounts {
+  phonenumber: string;
+  agentcode: string;
+  agentname: string;
+  sub_accounts: SubAccount[];
+}

@@ -1,104 +1,125 @@
-import { cookies } from "next/headers"
-import { NextResponse } from "next/server"
-import { z } from "zod"
-
-import { transactionSchemaCreateOrEdit } from "@/types/tablesSchemas"
-import prisma from "@/lib/prisma"
-import { supabaseServer } from "@/lib/supabase_client"
+import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { getUserFromSession } from 'utils';
+import { account, DbConnection, subAccount, transaction } from 'db';
+import { like, eq, desc } from 'drizzle-orm';
+import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(request: Request) {
-  const requestValues = (await request.json()) as z.infer<
-    typeof transactionSchemaCreateOrEdit
-  >
+  const session = await getServerSession();
+  const informations = getUserFromSession(session);
+  const requestValues = (await request.json()) as {
+    accountNumber: string;
+    montant: string;
+    commentaire: string;
+    phoneNumber: string;
+    clientName: string;
+    identityPiece: string;
+    transactionNumber: string;
+    transactionType: 'Depot' | 'Retrait' | 'Approvisionement';
+  };
   try {
-    const supabase = supabaseServer(cookies)
+    const database = await DbConnection.instance();
 
-    const currentSubAccount = await supabase
-      .from("sub_account")
-      .select("*")
-      .eq("id", requestValues.sub_account_id)
-      .single()
+    const allSubAccount = await database.query.subAccount.findMany();
 
-    const currentAccount = await supabase
-      .from("account")
-      .select("*")
-      .like("agentcode", "%Main%")
-      .single()
-    const selectedMainSubAccount = await supabase
-      .from("sub_account")
-      .select("*")
-      .eq("transation_genre", "MainAccount")
-      .eq("account_number", currentAccount.data!.phonenumber)
-      .eq("devise", currentSubAccount.data!.devise)
-      .single()
+    const currentSubAccount = allSubAccount.filter(
+      (value) => value.id === requestValues.accountNumber
+    )[0];
 
-    const mainSubAccount = selectedMainSubAccount.data
-    if (requestValues.transaction_type === "Depot") {
-      if (currentSubAccount.data!.amount < requestValues.amount) {
+    const currentAccount = await database.query.account.findFirst({
+      where: like(account.agentcode, '%Main%'),
+    });
+    const mainSubAccount = allSubAccount.filter(
+      (value) =>
+        value.transationGenre === 'MainAccount' &&
+        value.accountNumber == currentAccount?.phonenumber &&
+        value.devise === currentSubAccount.devise
+    )[0];
+    if (requestValues.transactionType === 'Depot') {
+      if (currentSubAccount?.amount < parseFloat(requestValues.montant)) {
         return NextResponse.json({
-          messageType: "error",
+          messageType: 'error',
           message:
-            "The amount you provide is greater than the current amount available",
-        })
+            'The amount you provide is greater than the current amount available',
+        });
       }
-    } else if (requestValues.transaction_type === "Retrait") {
-      if (mainSubAccount!.amount < requestValues.amount) {
+    } else if (requestValues.transactionType === 'Retrait') {
+      if (mainSubAccount?.amount < parseFloat(requestValues.montant)) {
         return NextResponse.json({
-          messageType: "error",
+          messageType: 'error',
           message:
-            "The amount you provide is greater than the current amount available",
-        })
+            'The amount you provide is greater than the current amount available',
+        });
       }
     }
-    const createATransaction = prisma.transaction.create({
-      data: {
-        clientName: requestValues.clientName,
-        transation_type: requestValues.transaction_type,
-        numero_reference: requestValues.numero_reference,
-        amount: requestValues.amount,
-        amount_before: currentSubAccount.data!.amount,
+
+    await database.transaction(async (tx) => {
+      await tx.insert(transaction).values({
+        transationType: requestValues.transactionType,
+        numeroReference: requestValues.transactionNumber,
+        amount: parseFloat(requestValues.montant),
+        amountBefore: currentSubAccount?.amount,
         phoneNumber: requestValues.phoneNumber,
         identityPiece: requestValues.identityPiece,
-        subaccount: { connect: { id: requestValues.sub_account_id } },
-        user: { connect: { id: requestValues.user_id } },
-      },
-    })
-
-    let updateMoney: any
-    let updateMainAccount: any
-    switch (requestValues.transaction_type) {
-      case "Retrait":
-        updateMoney = prisma.sub_account.update({
-          where: { id: requestValues.sub_account_id },
-          data: {
-            amount: currentSubAccount.data!.amount + requestValues.amount,
-          },
-        })
-        updateMainAccount = prisma.sub_account.update({
-          where: { id: mainSubAccount!.id },
-          data: { amount: mainSubAccount!.amount - requestValues.amount },
-        })
-        break
-      case "Depot":
-        updateMoney = prisma.sub_account.update({
-          where: { id: requestValues.sub_account_id },
-          data: {
-            amount: currentSubAccount.data!.amount - requestValues.amount,
-          },
-        })
-        updateMainAccount = prisma.sub_account.update({
-          where: { id: mainSubAccount!.id },
-          data: { amount: mainSubAccount!.amount + requestValues.amount },
-        })
-        break
-    }
-    await prisma.$transaction([
-      createATransaction,
-      updateMoney,
-      updateMainAccount,
-    ])
-    return NextResponse.json({ messageType: "success" })
+        subAccountId: requestValues.accountNumber,
+        clientName: requestValues.clientName,
+        userId: `${informations?.id}`,
+        createAt: `${new Date().toISOString()}`,
+        id: uuidv4(),
+        updatedAt: `${new Date().toISOString()}`,
+      });
+      if (requestValues.transactionType == 'Retrait') {
+        await tx.transaction(async (tx2) => {
+          await tx
+            .update(subAccount)
+            .set({
+              amount:
+                currentSubAccount?.amount + parseFloat(requestValues.montant),
+            })
+            .where(eq(subAccount.id, requestValues.accountNumber));
+          await tx
+            .update(subAccount)
+            .set({
+              amount:
+                mainSubAccount?.amount - parseFloat(requestValues.montant),
+            })
+            .where(eq(subAccount.id, mainSubAccount.id));
+        });
+      } else if (requestValues.transactionType == 'Depot') {
+        await tx.transaction(async (tx2) => {
+          await tx
+            .update(subAccount)
+            .set({
+              amount:
+                currentSubAccount?.amount - parseFloat(requestValues.montant),
+            })
+            .where(eq(subAccount.id, requestValues.accountNumber));
+          await tx
+            .update(subAccount)
+            .set({
+              amount:
+                mainSubAccount?.amount + parseFloat(requestValues.montant),
+            })
+            .where(eq(subAccount.id, mainSubAccount.id));
+        });
+      }
+    });
+    const transactionListData =
+      await DbConnection.instance().query.transaction.findMany({
+        with: { subAccount: true, user: true },
+        orderBy: [desc(transaction.createAt)],
+      });
+    const accountList = await DbConnection.instance().query.account.findMany({
+      with: { sub_accounts: true },
+    });
+    return NextResponse.json({
+      messageType: 'success',
+      transactions: transactionListData,
+      accountList: accountList,
+    });
   } catch (e) {
-    return NextResponse.json({ messageType: "error" })
+    console.log(e);
+    return NextResponse.json({ messageType: 'error' });
   }
 }

@@ -23,6 +23,7 @@ import { columns, statusOptions } from 'utils';
 import { BottomContent } from './transactionTable/BottomContent';
 import { TopContent } from './transactionTable/TopContent';
 import { statusColorMap, SubAccount, Transaction } from 'types';
+import { useTransactionListState } from 'states';
 
 const INITIAL_VISIBLE_COLUMNS = [
   'client',
@@ -36,13 +37,8 @@ const INITIAL_VISIBLE_COLUMNS = [
 
 type User = Transaction;
 
-export function TransactionList({
-  transactions,
-  subAccounts,
-}: {
-  transactions: Transaction[];
-  subAccounts: any;
-}) {
+export function TransactionList() {
+  const { listOfTransactions } = useTransactionListState();
   const [filterValue, setFilterValue] = React.useState('');
   const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
     new Set([])
@@ -58,7 +54,7 @@ export function TransactionList({
   });
   const [page, setPage] = React.useState(1);
 
-  const pages = Math.ceil(transactions.length / rowsPerPage);
+  const pages = Math.ceil(listOfTransactions.length / rowsPerPage);
 
   const hasSearchFilter = Boolean(filterValue);
 
@@ -71,7 +67,7 @@ export function TransactionList({
   }, [visibleColumns]);
 
   const filteredItems = React.useMemo(() => {
-    let filteredUsers = [...transactions];
+    let filteredUsers = [...listOfTransactions];
 
     if (hasSearchFilter) {
       filteredUsers = filteredUsers.filter((user) => {
@@ -91,7 +87,7 @@ export function TransactionList({
     }
 
     return filteredUsers;
-  }, [transactions, filterValue, statusFilter]);
+  }, [listOfTransactions, filterValue, statusFilter]);
 
   const items = React.useMemo(() => {
     const start = (page - 1) * rowsPerPage;
@@ -116,13 +112,15 @@ export function TransactionList({
 
       switch (columnKey) {
         case 'client':
-          return <p className={'font-bold '}>{cellValue}</p>;
+          return <p className={''}>{cellValue}</p>;
         case 'phone_number':
-          return <p className={'font-bold '}>{cellValue}</p>;
+          return <p className={''}>{cellValue}</p>;
         case 'amount':
         case 'amount_before':
           return (
-            <p>{`${cellValue} ${user.devise === 'USD' ? ' $' : ' FC'}`}</p>
+            <p className={'font-bold'}>{`${cellValue} ${
+              user.devise === 'USD' ? ' $' : ' FC'
+            }`}</p>
           );
         case 'transaction_type':
           return (
@@ -231,8 +229,7 @@ export function TransactionList({
           statusFilter={statusFilter}
           setVisibleColumns={setVisibleColumns}
           visibleColumns={visibleColumns}
-          subAccountList={subAccounts}
-          userLength={transactions.length}
+          userLength={listOfTransactions.length}
         />
       }
       topContentPlacement="outside"

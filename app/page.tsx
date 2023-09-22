@@ -1,8 +1,7 @@
 import { DbConnection, subAccount, transaction } from 'db';
-import { AccountList, TransactionList } from 'ui';
+import { AccountList, StoreInitializer, TransactionList } from 'ui';
 import { asc, desc } from 'drizzle-orm';
 import { getAllTransactionPured } from 'utils';
-
 export default async function Index() {
   const accountList = await DbConnection.instance().query.account.findMany({
     with: { sub_accounts: true },
@@ -20,12 +19,14 @@ export default async function Index() {
 
   return (
     <>
-      <AccountList accountInformation={accountList} />
+      <StoreInitializer
+        transactions={allTransactionPured}
+        subAccounts={subAccountList}
+        accountsList={accountList}
+      />
+      <AccountList />
       <section className={'container'}>
-        <TransactionList
-          transactions={allTransactionPured}
-          subAccounts={subAccountList}
-        />
+        <TransactionList />
       </section>
     </>
   );

@@ -9,7 +9,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/money-shop"
+        "outputPath": ".next"
       },
       "configurations": {
         "development": {

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { getUserFromSession } from 'utils';
 import { DbConnection, subAccount, transaction } from 'db';
-import { eq } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(request: Request) {
@@ -46,8 +46,20 @@ export async function POST(request: Request) {
           .where(eq(subAccount.id, requestValues.accountNumber));
       });
     }
+    const transactionListData =
+      await DbConnection.instance().query.transaction.findMany({
+        with: { subAccount: true, user: true },
+        orderBy: [desc(transaction.createAt)],
+      });
+    const accountList = await DbConnection.instance().query.account.findMany({
+      with: { sub_accounts: true },
+    });
 
-    return NextResponse.json({ messageType: 'success' });
+    return NextResponse.json({
+      messageType: 'success',
+      transactions: transactionListData,
+      accountList: accountList,
+    });
   } catch (e) {
     console.log(e);
     return NextResponse.json({

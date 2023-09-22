@@ -17,12 +17,12 @@ import { SubAccount } from 'types';
 import * as zod from 'zod';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import { useTransactionListState } from 'states';
+import { getAllTransactionPured } from 'utils';
 
-interface ApprovisionnerProps {
-  subAccountList: SubAccount[];
-}
-
-export const Approvisionner = ({ subAccountList }: ApprovisionnerProps) => {
+export const Approvisionner = () => {
+  const { subAccounts, setListOfTransaction, setAccountsList } =
+    useTransactionListState();
   const {
     isOpen,
     onOpen,
@@ -53,10 +53,14 @@ export const Approvisionner = ({ subAccountList }: ApprovisionnerProps) => {
     const finalResponse = await response.json();
     if (finalResponse.messageType === 'success') {
       formRef?.current?.reset();
-      toast.success('The transaction was added successfully');
+      toast.success('The transaction was added successfully', {
+        position: 'top-right',
+      });
+      setListOfTransaction(getAllTransactionPured(finalResponse.transactions));
+      setAccountsList(finalResponse.accountList);
       closeElement();
     } else {
-      toast.error('Error transaction');
+      toast.error('Error transaction', { position: 'top-right' });
     }
     setIsLoading(false);
   };
@@ -89,7 +93,7 @@ export const Approvisionner = ({ subAccountList }: ApprovisionnerProps) => {
                       {...register('accountNumber')}
                       disableSelectorIconRotation
                     >
-                      {subAccountList.map((subAccount) => (
+                      {subAccounts.map((subAccount) => (
                         <SelectItem key={subAccount.id} value={subAccount.id}>
                           {subAccount.type}
                         </SelectItem>

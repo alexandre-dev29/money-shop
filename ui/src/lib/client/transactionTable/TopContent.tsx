@@ -9,10 +9,10 @@ import {
   Input,
   Selection,
 } from '@nextui-org/react';
-import { ChevronDownIcon, PlusIcon, SearchIcon } from 'lucide-react';
+import { ChevronDownIcon, SearchIcon } from 'lucide-react';
 import { capitalize, columns, statusOptions } from 'utils';
-import { AddTransaction, Approvisionner } from 'ui';
-import { SubAccount } from 'types';
+import { Approvisionner } from '../Approvisionner';
+import { AddTransaction } from '../AddTransaction';
 
 export const TopContent = ({
   filterValue,
@@ -25,7 +25,6 @@ export const TopContent = ({
   setVisibleColumns,
   setFilterValue,
   setStatusFilter,
-  subAccountList,
 }: {
   filterValue: string;
   statusFilter: Selection;
@@ -37,7 +36,6 @@ export const TopContent = ({
   setVisibleColumns: any;
   setFilterValue: any;
   userLength: number;
-  subAccountList: SubAccount[];
 }) => {
   return React.useMemo(() => {
     return (
@@ -116,8 +114,8 @@ export const TopContent = ({
                 ))}
               </DropdownMenu>
             </Dropdown>
-            <AddTransaction subAccountList={subAccountList} />
-            <Approvisionner subAccountList={subAccountList} />
+            <AddTransaction />
+            <Approvisionner />
           </div>
         </div>
         <div className="flex justify-between items-center">

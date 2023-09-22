@@ -15,8 +15,10 @@
         "name": "next"
       }
     ],
-    "typeRoots": ["./types/next-auth.d.ts"],
-    "types": ["jest", "node"]
+    "types": [
+      "jest",
+      "node"
+    ]
   },
   "include": [
     "**/*.ts",
@@ -25,7 +27,8 @@
     "**/*.jsx",
     ".next/types/**/*.ts",
     "dist/money-shop/.next/types/**/*.ts",
-    "next-env.d.ts"
+    "next-env.d.ts",
+    ".next/.next/types/**/*.ts"
   ],
   "extends": "./tsconfig.base.json"
 }
