@@ -3,7 +3,6 @@ import NextAuth, { AuthOptions } from 'next-auth';
 import { DbConnection, users } from 'db';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcrypt';
-import { setCookie } from 'cookies-next';
 
 const authOptions: AuthOptions = {
   providers: [
@@ -41,6 +40,7 @@ const authOptions: AuthOptions = {
     }),
   ],
   pages: { signIn: '/login' },
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 const handler = NextAuth(authOptions);
