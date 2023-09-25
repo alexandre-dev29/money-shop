@@ -8,7 +8,10 @@ import { useTransactionListState } from 'states';
 import { FilteredTransactionList } from 'ui';
 
 const TransactionPage = () => {
-  const [value, setValue] = useState({
+  const [value, setValue] = useState<{
+    startDate: Date | null;
+    endDate: Date | null;
+  }>({
     startDate: null,
     endDate: null,
   });
