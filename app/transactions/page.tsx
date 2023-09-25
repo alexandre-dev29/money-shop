@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import Datepicker from 'react-tailwindcss-datepicker';
+import Datepicker, { DateType } from 'react-tailwindcss-datepicker';
 import { CalendarIcon } from 'lucide-react';
 import moment from 'moment';
 
@@ -9,8 +9,8 @@ import { FilteredTransactionList } from 'ui';
 
 const TransactionPage = () => {
   const [value, setValue] = useState<{
-    startDate: Date | null;
-    endDate: Date | null;
+    startDate: DateType;
+    endDate: DateType;
   }>({
     startDate: null,
     endDate: null,
@@ -19,13 +19,9 @@ const TransactionPage = () => {
   const [filteredTransaction, setFilteredTransaction] =
     useState(listOfTransactions);
 
-  const handleValueChange = ({
-    endDate,
-    startDate,
-  }: {
-    startDate: Date;
-    endDate: Date;
-  }) => {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const handleValueChange = ({ endDate, startDate }) => {
     const filteredResult = listOfTransactions.filter((value1) => {
       return moment(inverseAndHandleDate(value1.date_transaction)).isBetween(
         moment(startDate),
@@ -49,7 +45,12 @@ const TransactionPage = () => {
           <Datepicker
             value={value}
             useRange={true}
-            onChange={handleValueChange}
+            onChange={(value, e) => {
+              handleValueChange({
+                startDate: value?.startDate,
+                endDate: value?.endDate,
+              });
+            }}
             maxDate={new Date()}
             displayFormat={'DD/MM/YYYY'}
             primaryColor={'amber'}
