@@ -4,8 +4,6 @@ import {
   NavbarBrand,
   NavbarContent,
   NavbarItem,
-  NavbarMenu,
-  NavbarMenuItem,
   NavbarMenuToggle,
 } from '@nextui-org/navbar';
 import { siteConfig } from 'config';
@@ -29,13 +27,13 @@ export const AcmeLogo = () => (
 export async function NavBarComponent() {
   const session = await getServerSession();
   const informations = getUserFromSession(session);
-  const menuItems = [
-    'Profile',
-    'Dashboard',
-    'Activity',
-    'Analytics',
-    'Log Out',
-  ];
+  // const menuItems = [
+  //   'Profile',
+  //   'Dashboard',
+  //   'Activity',
+  //   'Analytics',
+  //   'Log Out',
+  // ];
 
   return (
     <Navbar isBordered maxWidth={'2xl'}>
@@ -77,26 +75,26 @@ export async function NavBarComponent() {
         <UserConnection />
       </NavbarContent>
 
-      <NavbarMenu>
-        {menuItems.map((item, index) => (
-          <NavbarMenuItem key={`${item}-${index}`}>
-            <Link
-              className="w-full"
-              color={
-                index === 2
-                  ? 'warning'
-                  : index === menuItems.length - 1
-                  ? 'danger'
-                  : 'foreground'
-              }
-              href="#"
-              size="lg"
-            >
-              {item}
-            </Link>
-          </NavbarMenuItem>
-        ))}
-      </NavbarMenu>
+      {/*<NavbarMenu>*/}
+      {/*  {menuItems.map((item, index) => (*/}
+      {/*    <NavbarMenuItem key={`${item}-${index}`}>*/}
+      {/*      <Link*/}
+      {/*        className="w-full"*/}
+      {/*        color={*/}
+      {/*          index === 2*/}
+      {/*            ? 'warning'*/}
+      {/*            : index === menuItems.length - 1*/}
+      {/*            ? 'danger'*/}
+      {/*            : 'foreground'*/}
+      {/*        }*/}
+      {/*        href="#"*/}
+      {/*        size="lg"*/}
+      {/*      >*/}
+      {/*        {item}*/}
+      {/*      </Link>*/}
+      {/*    </NavbarMenuItem>*/}
+      {/*  ))}*/}
+      {/*</NavbarMenu>*/}
     </Navbar>
   );
 }
