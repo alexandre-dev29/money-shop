@@ -6,9 +6,10 @@ const { join } = require('path');
 module.exports = {
   content: [
     './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
+    './node_modules/react-tailwindcss-datepicker/dist/index.esm.js',
     join(
       __dirname,
-      '{src,pages,components,app,ui}/**/*!(*.stories|*.spec).{ts,tsx,html}'
+      '{src,pages,components,app,ui}/**/*!(*.stories|*.spec).{ts,tsx,html}',
     ),
     ...createGlobPatternsForDependencies(__dirname),
   ],

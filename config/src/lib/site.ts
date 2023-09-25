@@ -12,11 +12,6 @@ export const siteConfig = {
       needsAdminRights: false,
     },
     {
-      title: 'Users',
-      href: '/users',
-      needsAdminRights: true,
-    },
-    {
       title: 'Transactions',
       href: '/transactions',
       needsAdminRights: false,
@@ -24,11 +19,6 @@ export const siteConfig = {
     {
       title: 'Accounts',
       href: '/accounts',
-      needsAdminRights: true,
-    },
-    {
-      title: 'Shops',
-      href: '/shops',
       needsAdminRights: true,
     },
   ] as NavItem[],

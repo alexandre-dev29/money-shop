@@ -8,13 +8,12 @@ import {
   NavbarMenuItem,
   NavbarMenuToggle,
 } from '@nextui-org/navbar';
-import { Link } from '@nextui-org/link';
 import { siteConfig } from 'config';
 import { ThemeToggle } from '../client/theme-toggle';
 import { UserConnection } from '../client/UserConnection';
 import { getServerSession } from 'next-auth';
-import { userSession } from 'types';
 import { getUserFromSession } from 'utils';
+import Link from 'next/link';
 
 export const AcmeLogo = () => (
   <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
