@@ -70,7 +70,7 @@ export const FilteredTransactionList = ({
           </div>
         }
         aria-label="Example static collection table"
-        className={classNames}
+        classNames={classNames}
       >
         <TableHeader>
           <TableColumn>Client</TableColumn>
